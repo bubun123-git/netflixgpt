@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import Header from "./Header";
+import CheckValidateData from "./Utils/Validate";
 
 const Login = () => {
   const [isSignInForm, setisSignInForm] = useState(true);
+  const [errorMessage, setErrorMessage] = useState(null);
 
   const toggleSignInForm = () => {
     setisSignInForm(!isSignInForm);
@@ -10,6 +12,20 @@ const Login = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+  };
+  const name = useRef(null);
+  const email = useRef(null);
+  const password = useRef(null);
+
+  const handleButtonClick = () => {
+    console.log(email.current.value);
+    console.log(password.current.value);
+
+    const message = CheckValidateData(
+      email.current.value,
+      password.current.value
+    );
+    setErrorMessage(message);
   };
 
   return (
@@ -30,22 +46,29 @@ const Login = () => {
           </h1>
           {!isSignInForm && (
             <input
+              ref={name}
               type="text"
               placeholder="Full Name"
               className="block w-full py-3 px-4 mb-4 bg-gray-900 text-white rounded focus:outline-none focus:bg-gray-800"
             />
           )}
           <input
+            ref={email}
             type="text"
             placeholder="Email Address"
             className="block w-full py-3 px-4 mb-4 bg-gray-900 text-white rounded focus:outline-none focus:bg-gray-800"
           />
           <input
+            ref={password}
             type="password"
             placeholder="Password"
             className="block w-full py-3 px-4 mb-4 bg-gray-900 text-white rounded focus:outline-none focus:bg-gray-800"
           />
-          <button className="block w-full py-3 px-4 bg-red-600 text-white rounded hover:bg-red-700 focus:outline-none">
+          <p className="text-red-500 font-bold text-lg p-2">{errorMessage}</p>
+          <button
+            onClick={handleButtonClick}
+            className="block w-full py-3 px-4 bg-red-600 text-white rounded hover:bg-red-700 focus:outline-none"
+          >
             {isSignInForm ? "Sign In" : "Sign Up"}
           </button>
           <br />
