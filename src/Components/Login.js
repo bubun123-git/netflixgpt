@@ -23,7 +23,8 @@ const Login = () => {
 
     const message = CheckValidateData(
       email.current.value,
-      password.current.value
+      password.current.value,
+      name.current.value
     );
     setErrorMessage(message);
   };
