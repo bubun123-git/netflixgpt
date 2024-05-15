@@ -21,38 +21,32 @@ const Login = () => {
   const passwordRef = useRef(null);
 
   const handleButtonClick = () => {
-    console.log('button clicked');
-    
+    console.log("button clicked");
+
     const emailValue = emailRef.current.value;
     const passwordValue = passwordRef.current.value;
     const nameValue = nameRef.current ? nameRef.current.value : null;
 
-    const errorMessage = CheckValidateData(
-      emailValue,
-      passwordValue,
-      nameValue
-    );
-    setErrorMessage(errorMessage);
+    const message = CheckValidateData(emailValue, passwordValue);
+    setErrorMessage(message);
 
-    if (errorMessage) {
-      return;
-    }
+    if (!CheckValidateData(emailValue, passwordValue)) return;
+
+    //Sign In/Sign UP logic
 
     if (!isSignInForm) {
+      //Sign Up Logic
+
       createUserWithEmailAndPassword(auth, emailValue, passwordValue)
         .then((userCredential) => {
           const user = userCredential.user;
-          console.log("Sign up successful:", user);
-          // Additional logic after sign up if needed
+          console.log(user);
         })
         .catch((error) => {
           const errorCode = error.code;
           const errorMessage = error.message;
           setErrorMessage(`${errorCode}_${errorMessage}`);
-          console.error("Sign up error:", error);
         });
-    } else {
-      // Implement sign in logic here
     }
   };
 
