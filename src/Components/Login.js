@@ -1,12 +1,17 @@
 import React, { useRef, useState } from "react";
-import Header from "./Header";
 import CheckValidateData from "./Utils/Validate";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  updateProfile,
+} from "firebase/auth";
 import { auth } from "./Utils/Firebase";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [isSignInForm, setIsSignInForm] = useState(true);
   const [errorMessage, setErrorMessage] = useState(null);
+  const navigate = useNavigate();
 
   const toggleSignInForm = () => {
     setIsSignInForm(!isSignInForm);
@@ -40,7 +45,30 @@ const Login = () => {
       createUserWithEmailAndPassword(auth, emailValue, passwordValue)
         .then((userCredential) => {
           const user = userCredential.user;
+          updateProfile(user, {
+            displayName: nameValue,
+          })
+            .then(() => {
+              navigate("/browse");
+            })
+            .catch((error) => {
+              setErrorMessage(error.message);
+            });
           console.log(user);
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          setErrorMessage(`${errorCode}_${errorMessage}`);
+        });
+    } else {
+      //Sign In Logic
+
+      signInWithEmailAndPassword(auth, emailValue, passwordValue)
+        .then((userCredential) => {
+          const user = userCredential.user;
+          console.log(user);
+          navigate("/browse");
         })
         .catch((error) => {
           const errorCode = error.code;
@@ -52,7 +80,6 @@ const Login = () => {
 
   return (
     <div>
-      <Header />
       <div className="absolute top-0 left-0 right-0 py-6 px-8 bg-gradient-to-b from-black z-10">
         <img
           className="w-52 mx-auto"
