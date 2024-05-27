@@ -1,21 +1,43 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { auth } from "./Utils/Firebase";
-import { signOut } from "firebase/auth";
+import { onAuthStateChanged, signOut } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { addUser, removeUser } from "./Utils/userSlice";
 
 const Header = () => {
-  const Navigate = useNavigate();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleSignOut = () => {
     signOut(auth)
       .then(() => {
         // Sign-out successful.
-        Navigate("/");
+        navigate("/");
       })
       .catch((error) => {
-        Navigate("/error")
+        navigate("/error");
       });
   };
+
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        const { uid, email, displayName } = user;
+        dispatch(
+          addUser({
+            uid,
+            email,
+            displayName,
+          })
+        );
+        navigate("/browse");
+      } else {
+        dispatch(removeUser());
+        navigate("/");
+      }
+    });
+  }, [dispatch, navigate]);
 
   return (
     <div className="flex justify-end">

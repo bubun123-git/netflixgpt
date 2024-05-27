@@ -1,12 +1,21 @@
-import React from 'react'
-import Header from './Header'
+import React from "react";
+import Header from "./Header";
+import useNowPlayingMovie from "./hooks/useNowPlayingMovie";
+import MainContainer from "./MainContainer";
+import SecondaryContainer from "./SecondaryContainer";
 
 const Browse = () => {
+  //Fetch Data from TMDB API and update the store
+
+  useNowPlayingMovie();
+
   return (
     <div>
-      <Header/>
+      <Header />
+      <MainContainer />
+      <SecondaryContainer />
     </div>
-  )
-}
+  );
+};
 
-export default Browse
+export default Browse;
